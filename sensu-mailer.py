@@ -37,6 +37,42 @@ def email(e_from='sensu', e_to=['root@localhost'], e_body=''):
     s.quit()
 
 
+def checkeventstate(event):
+    '''check state of the alert, occurrences, interval,
+    refreshes, stashes, etc'''
+
+    defaults = {
+        'occurrences': 1,
+        'interval': 30,
+        'refresh': 600
+    }
+
+    occurrences = event['occurrences']
+    interval = event['check']['interval']
+    refresh = defaults['refresh']
+
+    # some debugging for now
+    import time
+    try:
+        f = open('/tmp/checkeventstate.log', 'a')
+        f.write(str(event['client']['name']) + ': '
+                + str(event['check']['name'])
+                + '[' + str(time.time()) + ']: '
+                + str(event['occurrences']) + ' \n')
+        f.close()
+    except Exception as e:
+        sys.exit(e)
+
+    if occurrences > defaults['occurrences'] and event['action'] == 'create':
+        number = refresh / interval
+        if int(number) == 0 or event['occurrences'] % number == 0:
+            return True
+        else:
+            print('INFO: Only handling every __' + str(number) + '__ occurrences')
+
+    return False
+
+
 def main(data):
     '''gets data from stdin, then
     sanitizes, then loads the json and
@@ -45,10 +81,14 @@ def main(data):
     dictionary to a string'''
 
     data = sanitize(data)
-    data = json.loads(data)
+    event = json.loads(data)
 
-    data = str(data)
-    email(e_body=data)
+    if event['check']['name'] != 'keepalive':
+        if checkeventstate(event):
+            str_event = str(event)
+            email(e_body=str_event)
+    else:
+        print('skipped..')
 
 
 if __name__ == "__main__":
