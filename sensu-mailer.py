@@ -47,9 +47,20 @@ def checkeventstate(event):
         'refresh': 600
     }
 
-    occurrences = event['occurrences']
-    interval = event['check']['interval']
-    refresh = defaults['refresh']
+    if 'occurrences' in event.keys():
+        occurrences = event['occurrences']
+    else:
+        occurrences = defaults['occurrences']
+
+    if 'interval' in event.keys():
+        interval = event['check']['interval']
+    else:
+        interval = defaults['interval']
+
+    if 'refresh' in event.keys():
+        refresh = event['check']['refresh']
+    else:
+        refresh = defaults['refresh']
 
     # some debugging for now
     import time
@@ -68,7 +79,8 @@ def checkeventstate(event):
         if int(number) == 0 or event['occurrences'] % number == 0:
             return True
         else:
-            print('INFO: Only handling every __' + str(number) + '__ occurrences')
+            print('INFO: Only handling every __'
+                  + str(number) + '__ occurrences')
 
     return False
 
