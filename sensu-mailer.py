@@ -6,6 +6,7 @@ import re
 import sys
 import smtplib
 from email.mime.text import MIMEText
+# from pprint import pprint
 
 
 def sanitize(data):
@@ -22,7 +23,7 @@ def sanitize(data):
     return data
 
 
-def email(e_from='sensu', e_to='root@localhost', e_body=''):
+def email(e_from='sensu', e_to=['root@localhost'], e_body=''):
     '''e_from = email from,
        e_to = email to,
        e_body = email body'''
@@ -30,7 +31,6 @@ def email(e_from='sensu', e_to='root@localhost', e_body=''):
     msg['Subject'] = 'Sensu notification'
     msg['From'] = e_from
     msg['To'] = ', '.join(e_to)
-    msg.preamble = 'Sensu notifcation'
 
     s = smtplib.SMTP('localhost')
     s.sendmail(e_from, [e_to], msg.as_string())
@@ -38,7 +38,7 @@ def email(e_from='sensu', e_to='root@localhost', e_body=''):
 
 
 def main(data):
-    '''main gets data from stdin, then
+    '''gets data from stdin, then
     sanitizes, then loads the json and
     until I have a function to create the
     mail body simply converts the data from json/
