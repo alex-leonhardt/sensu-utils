@@ -20,7 +20,8 @@ def email(e_from='sensu', e_to=['root@localhost'], e_body='',
     msg = MIMEText(e_body)
     msg['Subject'] = e_subject
     msg['From'] = e_from
-    msg['To'] = ', '.join(e_to)
+    e_to = ', '.join(e_to)
+    msg['To'] = e_to
 
     s = smtplib.SMTP(host=e_smtp_host, port=e_smtp_port, timeout=10)
     s.sendmail(e_from, [e_to], msg.as_string())
@@ -34,7 +35,13 @@ def email_template(event):
     client_name = str(event['client']['name'])
     client_ip = str(event['client']['address'])
     check_name = str(event['check']['name'])
-    check_command = str(event['check']['command'])
+
+    check = event['check']
+    if 'command' in check.keys():
+        check_command = str(event['check']['command'])
+    else:
+        check_command = ''
+
     check_status = str(event['check']['status'])
     check_output = str(event['check']['output'])
     event_occurrences = str(event['occurrences'])
@@ -84,7 +91,7 @@ def main(data):
 
     e_to = settings['e_to']
     if type(e_to) is not list:
-        raise('Exception: e_to must be an array')
+        sys.exit('Exception: e_to must be an array')
     e_from = settings['e_from']
     e_smtp_host = settings['e_smtp_host']
     e_smtp_port = settings['e_smtp_port']
