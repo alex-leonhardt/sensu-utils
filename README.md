@@ -6,7 +6,7 @@ Sensu handlers, etc. primarily written in python as current sensu-util scripts/h
 HANDLERS
 --------
 
-# sensu-mailer.py
+## sensu-mailer.py
 - uses sensu-mailer.yaml which needs to be placed into /etc/sensu/conf.d/sensu-mailer.yaml
 
 NOTES and HACKS
