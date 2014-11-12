@@ -34,12 +34,11 @@ def yamlconfig(filename='settings.yaml'):
         with open(filename) as f:
             config = yaml.load(f.read())
     except Exception as e:
-        print('Exception: ' + e)
+        print('Exception: ' + str(e))
 
     if type(config) is dict:
         if 'settings' not in config.items():
-            print('Error: config file does not start with "settings: "')
-            return {}
+            raise('Error: config file ' + filename + ' does not contain "settings: "')
     else:
         return {}
 

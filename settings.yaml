@@ -1,6 +1,7 @@
 ---
 settings:
-  e_to: 'root'
+  e_to: 
+    - 'root'
   e_from: 'sensu'
   e_smtp_host: 'localhost'
   e_smtp_port: 25
