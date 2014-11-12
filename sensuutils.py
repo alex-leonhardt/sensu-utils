@@ -4,7 +4,7 @@ import re
 import yaml
 
 
-def yamlconfig(filename='settings.yaml'):
+def yamlconfig(filename='/etc/sensu/conf.d/settings.yaml'):
     '''reads config from yaml file in
     same directory as this file
 
@@ -37,8 +37,8 @@ def yamlconfig(filename='settings.yaml'):
         print('Exception: ' + str(e))
 
     if type(config) is dict:
-        if 'settings' not in config.items():
-            raise('Error: config file ' + filename + ' does not contain "settings: "')
+        if 'settings' not in config.keys():
+            print('Error: config file ' + filename + ' does not contain "settings: "')
     else:
         return {}
 
