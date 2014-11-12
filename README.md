@@ -11,5 +11,5 @@ HANDLERS
 
 NOTES and HACKS
 ---------------
-- sensuutils.py needs to be copied into /var/lib/python*/site-packages/
+- sensuutils.py needs to be copied into /usr/lib/python*/site-packages/
 
