@@ -7,6 +7,7 @@ import smtplib
 from email.mime.text import MIMEText
 import re
 import sensuutils
+import os
 
 
 def email(e_from='sensu', e_to=['root@localhost'], e_body='',
@@ -85,10 +86,19 @@ def main(data):
 
     data = sensuutils.sanitize(data)
     event = json.loads(data)
+    try:
+        settings_file = str(event['handler']['name'])
+    except:
+        settings_file = 'sensu-mailer'
 
-    settings = sensuutils.yamlconfig(filename='/etc/sensu/conf.d/sensu-mailer.yaml')
+    if os.path.exists('/etc/sensu/conf.d/' + settings_file + '.yaml'):
+        settings = sensuutils.yamlconfig(filename='/etc/sensu/conf.d/' + settings_file + '.yaml')
+    elif os.path.exists('/etc/sensu/conf.d/settings.yaml'):
+        settings = sensuutils.yamlconfig()
+    else:
+        sys.exit("Unable to find config file: " + settings_file + ".yaml nor settings.yaml")
+
     settings = settings['settings']
-
     e_to = settings['e_to']
     if type(e_to) is not list:
         sys.exit('Exception: e_to must be an array')
